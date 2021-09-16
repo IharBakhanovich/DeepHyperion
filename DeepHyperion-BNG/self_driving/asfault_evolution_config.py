@@ -23,7 +23,7 @@ class EvolutionConfig:
     ATTEMPT_REPAIR = False
     SEARCH_STOPPER = None
 
-    DIR_TO_SAVE = '../generated_individuals'
+    DIR_TO_SAVE = '../data/member_seeds/population_asfault'
 
     @staticmethod
     def get_default():

@@ -46,10 +46,11 @@ class Config:
         self.simulation_save = True
         self.simulation_name = 'beamng_nvidia_runner/sim_$(id)'
         self.keras_model_file = 'self-driving-car-185-2020.h5'
-        # self.generator_name = Config.GEN_SEQUENTIAL_SEEDED
+        self.generator_name = Config.GEN_SEQUENTIAL_SEEDED
         # self.seed_folder = 'population_HQ1'
-        self.generator_name = Config.GEN_DIVERSITY
-        self.seed_folder = 'initial_pool'
+        # self.generator_name = Config.GEN_DIVERSITY
+        # self.seed_folder = 'initial_pool'
+        self.seed_folder = 'population_asfault'
         self.initial_population_folder = "initial_population"
 
         self.Feature_Combination = ["SegmentCount", "MeanLateralPosition"]

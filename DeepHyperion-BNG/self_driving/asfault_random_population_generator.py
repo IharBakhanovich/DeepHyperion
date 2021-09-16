@@ -138,36 +138,38 @@ def main():
     # save_road_test_to_json_file(road_test)
     #
     #
-    # # if not os.path.exists(c.DIR_TO_SAVE):
-    # #     os.makedirs(c.DIR_TO_SAVE)
-    # # # creating a roadTestFactory
-    # # roadTestFactory = RoadTestFactory(c.BOUNDS)
+
+    if not os.path.exists(c.DIR_TO_SAVE):
+        os.makedirs(c.DIR_TO_SAVE)
+    # creating a roadTestFactory
+    roadTestFactory = RoadTestFactory(c.BOUNDS)
     # # # rg = RoadGenerator(bounds).generate_factories()
     # # # rg.generate_factories()
-    # # for i in range(1, 20):
-    # #     asfault_member = roadTestFactory.generate_random_test()
-    # #     # Generate the dictionary
-    # #     asfault_member_as_dictionary = asfault_member.to_dict(asfault_member)
-    # #     id = asfault_member_as_dictionary['test_id']
-    # #     with open(os.path.join(c.DIR_TO_SAVE, str(id) + '_random_test.json'), 'w') as fp:
-    # #         json.dump(asfault_member_as_dictionary, fp)
+    for i in range(0, 12):
+        asfault_member = roadTestFactory.generate_random_test()
+        # Generate the dictionary
+        asfault_member_as_dictionary = asfault_member.to_dict(asfault_member)
+        id = asfault_member_as_dictionary['test_id']
+        with open(os.path.join(c.DIR_TO_SAVE, 'seed'+ str(id) + '.json'), 'w') as fp:
+            json.dump(asfault_member_as_dictionary, fp)
 
-    # to test fetching sample_nodes from RoadTest instance and creating the AsFaultBeamNGMember
-    # creating the RoadTest instance
-    size = c.BOUNDS
-    asfault_member = generate_random_test(size)
-    control_nodes = get_control_nodes(asfault_member)
-    print(control_nodes)
-    num_spline_nodes = get_num_spline_nodes()
-    sample_nodes = get_sample_nodes(control_nodes, num_spline_nodes)
-    road_bbox = get_road_bbox()
-    res = BeamNGMember(control_nodes, sample_nodes, num_spline_nodes, road_bbox)
-    res_asf = AsFaultBeamNGMember(asfault_member)
-    mutant_res_asf = res_asf.mutate()
-    res_asf_to_dict = res_asf.to_dict()
-    # asfault_member_from_dict = AsFaultBeamNGMember(AsFaultBeamNGMember.from_dict(res_asf_to_dict))
-    print(res_asf_to_dict)
-    print(road_bbox)
+    # # to test fetching sample_nodes from RoadTest instance and creating the AsFaultBeamNGMember
+    # # creating the RoadTest instance
+    # size = c.BOUNDS
+    # asfault_member = generate_random_test(size)
+    # control_nodes = get_control_nodes(asfault_member)
+    # print(control_nodes)
+    # num_spline_nodes = get_num_spline_nodes()
+    # sample_nodes = get_sample_nodes(control_nodes, num_spline_nodes)
+    # road_bbox = get_road_bbox()
+    # res = BeamNGMember(control_nodes, sample_nodes, num_spline_nodes, road_bbox)
+    # res_asf = AsFaultBeamNGMember(asfault_member)
+    # # to test mutation
+    # mutant_res_asf = res_asf.mutate()
+    # res_asf_to_dict = res_asf.to_dict()
+    # # asfault_member_from_dict = AsFaultBeamNGMember(AsFaultBeamNGMember.from_dict(res_asf_to_dict))
+    # print(res_asf_to_dict)
+    # print(road_bbox)
 
 
 if __name__ == "__main__":
