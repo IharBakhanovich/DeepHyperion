@@ -8,3 +8,5 @@ experiments/data/mnist/
 experiments/plots/
 DeepHyperion-BNG/logs/
 experiments/__pycache__/
+.venv/Lib/
+DeepHyperion-BNG/self_driving/__pycache__/
