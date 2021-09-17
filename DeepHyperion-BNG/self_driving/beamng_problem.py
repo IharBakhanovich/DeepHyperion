@@ -13,6 +13,7 @@ from core.misc import delete_folder_recursively
 from core.problem import Problem
 from core.seed_pool_access_strategy import SeedPoolAccessStrategy
 from core.seed_pool_impl import SeedPoolFolder, SeedPoolRandom
+from self_driving.asfault_member import AsFaultBeamNGMember
 from self_driving.beamng_config import BeamNGConfig
 from self_driving.beamng_evaluator import BeamNGEvaluator
 from self_driving.beamng_individual import BeamNGIndividual
@@ -80,7 +81,7 @@ class BeamNGProblem(Problem):
         return BeamNGIndividual
 
     def member_class(self):
-        return BeamNGMember
+        return AsFaultBeamNGMember
 
     def _get_evaluator(self):
         if self._evaluator:

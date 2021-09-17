@@ -74,6 +74,12 @@ def save_road_test_to_json_file(road_test):
 
 
 def fetch_road_test_instance_from_json_file(file):
+    '''
+    Fetches the RoadTest instance of AsFault from json file.
+
+    Parameters:
+        file -- is the path to the .json file
+    '''
     with open(file, 'r') as infile:
         test_dict = json.loads(infile.read())
     return RoadTest.from_dict(test_dict)

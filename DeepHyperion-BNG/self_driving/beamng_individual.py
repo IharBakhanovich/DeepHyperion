@@ -8,6 +8,7 @@ from core.log_setup import get_logger
 from core.misc import evaluate_sparseness
 from core.archive import Archive
 from core.individual import Individual
+from self_driving.asfault_member import AsFaultBeamNGMember
 from self_driving.beamng_member import BeamNGMember
 
 log = get_logger(__file__)
@@ -18,13 +19,13 @@ class BeamNGIndividual(Individual):
 
     def __init__(self, m: BeamNGMember, config: Config):
         super().__init__(m)
-        self.m: BeamNGMember = self.m
+        self.m: AsFaultBeamNGMember = self.m
         BeamNGIndividual.counter += 1
         self.name = f'ind{str(BeamNGIndividual.counter)}'
         self.name_ljust = self.name.ljust(6)
         self.config = config
         self.m.parent = self
-        self.seed: BeamNGMember
+        self.seed: AsFaultBeamNGMember
 
     def evaluate(self):
         self.m.evaluate()
@@ -49,7 +50,7 @@ class BeamNGIndividual(Individual):
 
     @classmethod
     def from_dict(self, d):
-        m = BeamNGMember.from_dict(d['m'])
+        m = AsFaultBeamNGMember.from_dict(d['m'])
         ind = BeamNGIndividual(m, None)
         ind.name = d['name']
         return ind

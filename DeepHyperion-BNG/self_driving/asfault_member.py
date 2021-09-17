@@ -43,25 +43,29 @@ def nodes_to_coords(nodes):
         coords.append((node['x'], node['y'], node['z'], node['width']))
     return coords
 
-class NoMutantWasCreated(Exception):
-    """Exception raised when there was no mutant created for asfault_member in AsFaultBeamNGMember.
 
-    Attributes:
-        asfault_member -- the member for which no mutant was created
-    """
+# class NoMutantWasCreated(Exception):
+#     """Exception raised when there was no mutant created for asfault_member in AsFaultBeamNGMember.
+#
+#     Attributes:
+#         message -- the error message
+#     """
+#
+#     def __init__(self, message="There was no mutant created for this AsFaultBeamNGMember"):
+#         self.message = message
+#         super().__init__(self.message)
 
-    def __init__(self, message="There was no mutant created for this AsFaultBeamNGMember"):
-        self.message = message
-        super().__init__(self.message)
 
 class AsFaultBeamNGMember(BeamNGMember):
+    '''
+    The class represents the BeamNGMember, which is created from the AsFault individual.
+    '''
 
-    '''
-    the code of this method is from AsFault (@author Tahereh Zohdi)
-    Gets control nodes from an asfault_member, that is the instance of the RoadTest class
-     and one of the AsFaultBeamNGMember parameter.
-    '''
     def _get_control_nodes(self):
+        # the code of this method is from AsFault (@author Tahereh Zohdi)
+        # Gets control nodes from an asfault_member, that is the instance
+        # of the RoadTest class and one of the AsFaultBeamNGMember parameter.
+
         # Get all the spines (linestrings) for each segment of the road
         spines = [n.get_spine() for n in self.asfault_member.get_path()]
         # Combine them into a multi-linestring
@@ -184,15 +188,15 @@ class AsFaultBeamNGMember(BeamNGMember):
         # creating the instance of the AsFault mutator
         asfault_mutator = MetaMutator()
 
-        # getting a mutant of the self.asfault_member during max 10 attempts.
-        # If there was no mutant created the NoMutantWasCreated exception is raised
+        # Getting a mutant of the self.asfault_member during max 10 attempts.
+        # If there was no any mutant created the NoMutantWasCreated exception is raised.
         mutant = None
         for i in range(10):
             mutant = asfault_mutator.mutate(self.asfault_member)
             if mutant != None:
                 break
         if mutant is None:
-            raise NoMutantWasCreated()
+            raise ValueError("No gene can be mutated")
 
         # this piece of code creates a mutant of the self.asfault_member till it is created
         # is_there_mutant = False

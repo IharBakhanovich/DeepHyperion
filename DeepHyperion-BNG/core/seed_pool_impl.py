@@ -5,6 +5,8 @@ from core.member import Member
 from core.folder_storage import SeedStorage
 from core.folders import folders
 from core.seed_pool import SeedPool
+from self_driving.asfault_member import AsFaultBeamNGMember
+from self_driving.asfault_random_population_generator import fetch_road_test_instance_from_json_file
 
 
 class SeedPoolFolder(SeedPool):
@@ -25,6 +27,9 @@ class SeedPoolFolder(SeedPool):
         else:
             result: Member = self.cache.get(path, None)
             if not result:
+                if self.problem.member_class() is AsFaultBeamNGMember:
+                    asfault_member = fetch_road_test_instance_from_json_file(self.storage.read(path))
+                    result = AsFaultBeamNGMember(asfault_member)
                 result = self.problem.member_class().from_dict(self.storage.read(path))
                 self.cache[path] = result
             result.problem = self.problem
