@@ -124,12 +124,12 @@ class AsFaultBeamNGMember(BeamNGMember):
     def to_dict(self) -> dict:
         # List of segments (Left, right)
         return {
-            'asfault_member': self.asfault_member,
-            'control_nodes': self.control_nodes,
-            'sample_nodes': self.sample_nodes,
-            'num_spline_nodes': self.num_spline_nodes,
-            'road_bbox_size': self.road_bbox.bbox.bounds,
-            'distance_to_boundary': self.distance_to_boundary
+            'asfault_member': RoadTest.to_dict(self.asfault_member),
+            # 'control_nodes': self.control_nodes,
+            # 'sample_nodes': self.sample_nodes,
+            # 'num_spline_nodes': self.num_spline_nodes,
+            # 'road_bbox_size': self.road_bbox.bbox.bounds,
+            # 'distance_to_boundary': self.distance_to_boundary
         }
 
     @classmethod
@@ -140,13 +140,11 @@ class AsFaultBeamNGMember(BeamNGMember):
         #                    dict['num_spline_nodes'], road_bbox)
         # res.distance_to_boundary = dict['distance_to_boundary']
         # LOAD the input required by AsFaultBeamNGMember
-        # asfautl_member_dict = dict['asfault_member']
-        # TODO this piece of code generates an Exception in the method RoadTest.from_dict:
-        #  the exception says, that there exist no 'test_id' property in the dict, but it exists.
-        # asfault_member = RoadTest.from_dict(asfautl_member_dict)
-        # res = AsFaultBeamNGMember(asfault_member)
-        # return res
-        pass
+        asfautl_member_dict = dict['asfault_member']
+        asfault_member = RoadTest.from_dict(asfautl_member_dict)
+        res = AsFaultBeamNGMember(asfault_member)
+
+        return res
 
     # def evaluate(self):
     #     # TODO This may be trickier

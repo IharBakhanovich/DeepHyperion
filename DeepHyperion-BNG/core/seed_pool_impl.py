@@ -27,7 +27,7 @@ class SeedPoolFolder(SeedPool):
         else:
             result: Member = self.cache.get(path, None)
             if not result:
-                if self.problem.member_class() is AsFaultBeamNGMember:
+                if type(self.problem.member_class()) is AsFaultBeamNGMember:
                     asfault_member = fetch_road_test_instance_from_json_file(self.storage.read(path))
                     result = AsFaultBeamNGMember(asfault_member)
                 result = self.problem.member_class().from_dict(self.storage.read(path))
