@@ -61,6 +61,7 @@ class MetaMutator():
         for segment in [segment for segment in individual.path if segment.roadtype not in GHOST_TYPES]:
             if random.random() < mutation_probability:
                 l.debug("Mutation: segment %s selected for mutation", segment)
+                print("Mutation: segment %s selected for mutation", segment)
                 # Randomly pick a factory to generate the replacement
                 mutators = [*self.mutators.values()]
                 random.shuffle(mutators)
@@ -73,6 +74,7 @@ class MetaMutator():
                 if mutated_network and mutated_network is not None:
                     has_mutation = True
                     l.info('Replaced %s with %s', aux['target'], aux['replacement'])
+                    print('Replaced %s with %s', aux['target'], aux['replacement'])
                 else:
                     l.warning("Error while applying mutator %s", str(type(mutator)))
                     return None
@@ -138,7 +140,7 @@ class SegmentReplacingMutator(Mutator):
         if not target:
             return None
         parent = network.get_parent(target)
-        replacement = self.factory(network.next_seg_id(), parent)[0]
+        replacement = self.factory(network.next_seg_id(), parent)[0] # here a replacement comes from
         network.replace_node(target, replacement)
         return network, {'target': target, 'replacement': replacement}
 

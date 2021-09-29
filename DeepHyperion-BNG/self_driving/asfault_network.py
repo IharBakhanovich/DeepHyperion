@@ -724,6 +724,9 @@ class NetworkLayout:
         bounds = [[point[0], point[1]] for point in bounds]
         ret['bounds'] = bounds
 
+        ret['absolute_version'] = layout.absolute_version
+        ret['seg_id'] = layout.seg_id
+
         nodes = {}
         for node in layout.parentage.nodes():
             nodes[str(node.seg_id)] = NetworkNode.to_dict(node)
@@ -770,6 +773,8 @@ class NetworkLayout:
 
         layout.update_abs()
         layout.check_reachable_intersections()
+        layout.absolute_version = dict['absolute_version']
+        layout.seg_id = dict['seg_id']
 
         return layout
 
@@ -861,8 +866,10 @@ class NetworkLayout:
         while todo:
             todo_node = todo.pop(0)
             todo_node.update_abs(turtle)
+            # print(hash(todo_node), todo_node)
             todo.extend([*self.parentage.successors(todo_node)])
             turtle.move(todo_node)
+        pass
 
     def update_abs(self, force=False):
         if not force and self.absolute_version == self.seg_id:

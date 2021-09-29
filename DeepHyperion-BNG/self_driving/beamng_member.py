@@ -65,7 +65,7 @@ class BeamNGMember(Member):
         #assert not self.needs_evaluation()
 
     def needs_evaluation(self):
-        return self.distance_to_boundary is None or self.simulation is None
+        return self.distance_to_boundary is None #or self.simulation is None
 
     def clear_evaluation(self):
         self.distance_to_boundary = None

@@ -7,8 +7,8 @@ from self_driving.asfault_evolution_config import EvolutionConfig as c
 
 from shapely.geometry import box, MultiLineString
 from shapely import ops
-from asfault_network import *
-from road_generator import *
+from self_driving.asfault_network import *
+from self_driving.road_generator import *
 
 # code from the AsFault for the testing fetching of sample_nodes
 MIN_NODE_DISTANCE = 0.1
@@ -148,7 +148,8 @@ def main():
     # if not os.path.exists(c.DIR_TO_SAVE):
     #     os.makedirs(c.DIR_TO_SAVE)
     # creating a roadTestFactory
-    roadTestFactory = RoadTestFactory(c.BOUNDS)
+    # Creating initial population and upload it as .jsons in the 'data/member_seeds/population_asfault'
+    # roadTestFactory = RoadTestFactory(c.BOUNDS)
     # # # rg = RoadGenerator(bounds).generate_factories()
     # # # rg.generate_factories()
     # for i in range(0, 12):
@@ -171,11 +172,11 @@ def main():
     res = BeamNGMember(control_nodes, sample_nodes, num_spline_nodes, road_bbox)
     beamNGMember_to_dict = res.to_dict()
     beamNGMember_from_dict = BeamNGMember.from_dict(beamNGMember_to_dict)
-    # res_asf = AsFaultBeamNGMember(asfault_member)
+    res_asf = AsFaultBeamNGMember(asfault_member)
     # to test mutation
-    # mutant_res_asf = res_asf.mutate()
-    # res_asf_to_dict = res_asf.to_dict()
-    # asfault_member_from_dict = AsFaultBeamNGMember.from_dict(res_asf_to_dict)
+    # res_asf.mutate()
+    res_asf_to_dict = res_asf.to_dict()
+    asfault_member_from_dict = AsFaultBeamNGMember.from_dict(res_asf_to_dict)
     # print(res_asf_to_dict)
     print(road_bbox)
 

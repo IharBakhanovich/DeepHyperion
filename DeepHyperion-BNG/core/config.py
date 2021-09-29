@@ -32,9 +32,9 @@ class Config:
         self.experiment_name = 'exp'
         self.fitness_weights = (-1.0,)
 
-        self.POPSIZE = 2 #24
+        self.POPSIZE = 3 #24
         self.POOLSIZE = 3 #40
-        self.NUM_GENERATIONS = 2000000000
+        self.NUM_GENERATIONS = 500#0000000
 
         self.ARCHIVE_THRESHOLD = 35.0
 
@@ -53,8 +53,8 @@ class Config:
         self.seed_folder = 'population_asfault'
         self.initial_population_folder = "initial_population"
 
-        self.Feature_Combination = ["SegmentCount", "MeanLateralPosition"]
-        # self.Feature_Combination = ["SegmentCount", "MinRadius"]
+        # self.Feature_Combination = ["SegmentCount", "MeanLateralPosition"]
+        self.Feature_Combination = ["SegmentCount", "MinRadius"] # to change back (to the lane 56 when running really cases)
         # self.Feature_Combination = ["MinRadius", "MeanLateralPosition"]
         # self.Feature_Combination = ["SegmentCount", "SDSteeringAngle"]
         # self.Feature_Combination = ["SDSteeringAngle", "MeanLateralPosition"]

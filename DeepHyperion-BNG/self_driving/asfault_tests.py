@@ -526,6 +526,13 @@ class RoadTest:
             test_id = self.test_id
 
         ret = RoadTest(test_id, self.network.copy(), self.start, self.goal)
+        ret.score = self.score
+
+        ret.path = self.path
+        ret.path_line = self.path_line
+
+        # self.evo_step = None
+        # self.generation = None
         return ret
 
     def get_path_difference(self, oth):

@@ -249,7 +249,7 @@ class MapElitesBNG(MapElites):
         :return:
         """
         if function == 'min_radius':
-            return us.new_min_radius(x)
+            return us.min_radius(x)
         if function == 'mean_lateral_position':
             return us.mean_lateral_position(x)
         if function == "dir_coverage":

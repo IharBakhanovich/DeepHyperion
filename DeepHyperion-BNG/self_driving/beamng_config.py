@@ -19,4 +19,4 @@ class BeamNGConfig(Config):
 
         self.beamng_close_at_iteration = False
         self.beamng_evaluator = self.EVALUATOR_LOCAL_BEAMNG
-        #self.beamng_evaluator = self.EVALUATOR_FAKE
+        # self.beamng_evaluator = self.EVALUATOR_FAKE # to change back by running really cases after testing

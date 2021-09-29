@@ -7,8 +7,8 @@ from self_driving.beamng_evaluator import BeamNGEvaluator
 from self_driving.beamng_member import BeamNGMember
 from shapely.geometry import box, MultiLineString
 from shapely import ops
-from asfault_network import *
-from road_generator import *
+from self_driving.asfault_network import *
+from self_driving.road_generator import *
 
 # code from the AsFault
 MIN_NODE_DISTANCE = 0.1
@@ -109,7 +109,7 @@ class AsFaultBeamNGMember(BeamNGMember):
         super().__init__(self.control_nodes, self.sample_nodes, self.num_spline_nodes, self.road_bbox)
 
     def clone(self):
-        res = AsFaultBeamNGMember(self.asfault_member)
+        res = AsFaultBeamNGMember(self.asfault_member.copy())
         # Ensure we keep the original values
         res.control_nodes = self.control_nodes
         res.sample_nodes = self.sample_nodes
@@ -194,7 +194,8 @@ class AsFaultBeamNGMember(BeamNGMember):
             if mutant != None:
                 break
         if mutant is None:
-            raise ValueError("No gene can be mutated")
+            mutant = self.asfault_member
+            # raise ValueError("No gene can be mutated")
 
         # this piece of code creates a mutant of the self.asfault_member till it is created
         # is_there_mutant = False
@@ -202,13 +203,18 @@ class AsFaultBeamNGMember(BeamNGMember):
         #     mutant = asfault_mutator.mutate(self.asfault_member)
         #     if mutant != None:
         #         is_there_mutant = True
-
         self.asfault_member = mutant
 
         # Update the control and sample points using self, because those parameters don't match to tne new asfult_member
-        self.control_nodes = self._get_control_nodes()
-        self.num_spline_nodes = self._get_num_spline_nodes()
+        control_nodes = self._get_control_nodes()
+
+        # the crutch, because sometimes method '_get_control_nodes' returns less than 4 nodes
+        if(len(control_nodes)< 4):
+            return self
+
+        self.control_nodes = control_nodes
         self.sample_nodes = self._get_sample_nodes()
+        self.num_spline_nodes = self._get_num_spline_nodes()
         self.road_bbox = self._get_road_bbox()
 
         # adjustment the distance_to_boundary value, because it is a new individual and it should be evaluated
