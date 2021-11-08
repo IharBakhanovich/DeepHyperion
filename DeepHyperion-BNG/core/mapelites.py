@@ -148,39 +148,39 @@ class MapElites(ABC):
                 destination_sim_json = f"{log_dir_path}\\simulation_{solutions[i,j].m.name}_{i,j}.json"
                 destination_road = f"{log_dir_path}\\road_{solutions[i,j].m.name}_{i,j}.json"
 
-                # with open(destination_sim_json, 'w') as f:
-                #     f.write(json.dumps({
-                #         solutions[i, j].m.simulation.f_params: solutions[i, j].m.simulation.params._asdict(),
-                #         solutions[i, j].m.simulation.f_info: solutions[i, j].m.simulation.info.__dict__,
-                #         solutions[i, j].m.simulation.f_road: solutions[i, j].m.simulation.road.to_dict(),
-                #         solutions[i, j].m.simulation.f_records: [r._asdict() for r in solutions[i, j].m.simulation.states]
-                #     }))
-                #
-                # with open(destination_sim, 'w') as f:
-                #     sep = '\t'
-                #     f.write(sep.join(SimulationDataRecordProperties) + '\n')
-                #     gen = (r._asdict() for r in solutions[i,j].m.simulation.states)
-                #     gen2 = (sep.join([str(d[key]) for key in SimulationDataRecordProperties]) + '\n' for d in gen)
-                #     f.writelines(gen2)
-                #
-                # with open(destination_road, 'w') as f:
-                #     road = {
-                #             "road": solutions[i, j].m.to_dict(),
-                #             "features": [
-                #                 self.feature_dimensions[1].name,
-                #                 self.feature_dimensions[0].name
-                #             ],
-                #             "misbehaviour": misbehavior,
-                #             "performance": performances[i, j],
-                #             "tool": "DeepHyperion",
-                #             "run": self.run_id,
-                #             'timestamp': str(datetime.now()),
-                #             'elapsed': str(self.elapsed_time),
-                #             self.feature_dimensions[1].name: j,
-                #             self.feature_dimensions[0].name: i
-                #
-                #     }
-                #     f.write(json.dumps(road))
+                with open(destination_sim_json, 'w') as f:
+                    f.write(json.dumps({
+                        solutions[i, j].m.simulation.f_params: solutions[i, j].m.simulation.params._asdict(),
+                        solutions[i, j].m.simulation.f_info: solutions[i, j].m.simulation.info.__dict__,
+                        solutions[i, j].m.simulation.f_road: solutions[i, j].m.simulation.road.to_dict(),
+                        solutions[i, j].m.simulation.f_records: [r._asdict() for r in solutions[i, j].m.simulation.states]
+                    }))
+
+                with open(destination_sim, 'w') as f:
+                    sep = '\t'
+                    f.write(sep.join(SimulationDataRecordProperties) + '\n')
+                    gen = (r._asdict() for r in solutions[i,j].m.simulation.states)
+                    gen2 = (sep.join([str(d[key]) for key in SimulationDataRecordProperties]) + '\n' for d in gen)
+                    f.writelines(gen2)
+
+                with open(destination_road, 'w') as f:
+                    road = {
+                            "road": solutions[i, j].m.to_dict(),
+                            "features": [
+                                self.feature_dimensions[1].name,
+                                self.feature_dimensions[0].name
+                            ],
+                            "misbehaviour": misbehavior,
+                            "performance": performances[i, j],
+                            "tool": "DeepHyperion",
+                            "run": self.run_id,
+                            'timestamp': str(datetime.now()),
+                            'elapsed': str(self.elapsed_time),
+                            self.feature_dimensions[1].name: j,
+                            self.feature_dimensions[0].name: i
+
+                    }
+                    f.write(json.dumps(road))
 
                 road_imagery = BeamNGRoadImagery.from_sample_nodes(solutions[i, j].m.sample_nodes)
                 image_path = log_dir_path.joinpath(f"img_{solutions[i,j].m.name}_{i,j}")

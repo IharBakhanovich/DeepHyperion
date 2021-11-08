@@ -75,7 +75,7 @@ class MapElitesBNG(MapElites):
         """
         # "Generate random solution"
         seed = self.problem._seed_pool_strategy.get_seed()
-        road = seed.clone().mutate()
+        road = seed #.clone().mutate()
         road.config = self.config
         individual: BeamNGIndividual = BeamNGIndividual(road, self.config)
         individual.seed = seed

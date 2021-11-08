@@ -99,17 +99,21 @@ class AsFaultBeamNGMember(BeamNGMember):
         bbox_size = B_BOX
         return RoadBoundingBox(bbox_size)
 
-    def __init__(self, asfault_member):
+    def __init__(self, asfault_member, calculate_params):
         self.asfault_member = asfault_member
-        self.control_nodes = self._get_control_nodes()
-        self.num_spline_nodes = self._get_num_spline_nodes()
-        self.sample_nodes = self._get_sample_nodes()
-        self.road_bbox = self._get_road_bbox()
-
+        self.control_nodes = None
+        self.num_spline_nodes = None
+        self.sample_nodes = None
+        self.road_bbox = None
+        if(calculate_params):
+            self.control_nodes = self._get_control_nodes()
+            self.num_spline_nodes = self._get_num_spline_nodes()
+            self.sample_nodes = self._get_sample_nodes()
+            self.road_bbox = self._get_road_bbox()
         super().__init__(self.control_nodes, self.sample_nodes, self.num_spline_nodes, self.road_bbox)
 
     def clone(self):
-        res = AsFaultBeamNGMember(self.asfault_member.copy())
+        res = AsFaultBeamNGMember(self.asfault_member.copy(), False)
         # Ensure we keep the original values
         res.control_nodes = self.control_nodes
         res.sample_nodes = self.sample_nodes
@@ -142,7 +146,7 @@ class AsFaultBeamNGMember(BeamNGMember):
         # LOAD the input required by AsFaultBeamNGMember
         asfautl_member_dict = dict['asfault_member']
         asfault_member = RoadTest.from_dict(asfautl_member_dict)
-        res = AsFaultBeamNGMember(asfault_member)
+        res = AsFaultBeamNGMember(asfault_member, True)
 
         return res
 
@@ -210,6 +214,7 @@ class AsFaultBeamNGMember(BeamNGMember):
 
         # the crutch, because sometimes method '_get_control_nodes' returns less than 4 nodes
         if(len(control_nodes)< 4):
+            self.distance_to_boundary = None
             return self
 
         self.control_nodes = control_nodes

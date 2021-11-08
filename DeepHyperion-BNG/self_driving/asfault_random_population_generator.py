@@ -172,7 +172,7 @@ def main():
     res = BeamNGMember(control_nodes, sample_nodes, num_spline_nodes, road_bbox)
     beamNGMember_to_dict = res.to_dict()
     beamNGMember_from_dict = BeamNGMember.from_dict(beamNGMember_to_dict)
-    res_asf = AsFaultBeamNGMember(asfault_member)
+    res_asf = AsFaultBeamNGMember(asfault_member, True)
     # to test mutation
     # res_asf.mutate()
     res_asf_to_dict = res_asf.to_dict()
