@@ -16,8 +16,7 @@ class NvidiaPrediction:
             image = np.asarray(image)
 
             image = preprocess(image)
-            image = np.array([image])
-
+            image = np.array([image], dtype=np.float32)
             steering_angle = float(self.model.predict(image, batch_size=1))
 
             speed = car_state.vel_kmh
