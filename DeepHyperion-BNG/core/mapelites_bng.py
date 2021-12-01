@@ -2,11 +2,14 @@ import sys
 import os
 import json
 import time
+from os.path import join
 from pathlib import Path
 import numpy as np
 from datetime import datetime
 import logging as log
 import shutil
+import matplotlib
+matplotlib.use("Agg")
 #sys.path.insert(0, r'C:\DeepHyperion-BNG')
 #sys.path.append(os.path.dirname(os.path.dirname(os.path.join(__file__))))
 path = Path(os.path.abspath(__file__))
@@ -30,6 +33,10 @@ from self_driving.vehicle_state_reader import VehicleState
 from self_driving.beamng_member import BeamNGMember
 from self_driving.decal_road import DecalRoad
 
+#from memory_profiler import profile
+#fp = open("main_memory_usage_report.log", "w+")
+#fp6 = open("performance_measure_memory_usage_report.log", "w+")
+
 class MapElitesBNG(MapElites):
 
     def __init__(self, *args, **kwargs):
@@ -48,6 +55,7 @@ class MapElitesBNG(MapElites):
             b = b + (i,)
         return b
 
+    #@profile(stream=fp6)
     def performance_measure(self, x):
         """
         Apply the fitness function to x
@@ -79,6 +87,7 @@ class MapElitesBNG(MapElites):
         road.config = self.config
         individual: BeamNGIndividual = BeamNGIndividual(road, self.config)
         individual.seed = seed
+
         return individual
 
     def generate_random_solution_without_sim(self):
@@ -280,28 +289,9 @@ class MapElitesBNG(MapElites):
         with open(filedest, 'w') as f:
             (json.dump(config, f, sort_keys=True, indent=4))
 
+def main(config):
 
-def main():
-    
-    from folders import folders
-    log_dir_name = folders.experiments
-    # Ensure the folder exists
-    if os.path.exists(folders.log):
-        shutil.rmtree(folders.log)
-    Path(log_dir_name).mkdir(parents=True, exist_ok=True)
-    Config.EXECTIME = 0
-    
-    config = cfg.BeamNGConfig()
     problem = BeamNGProblem.BeamNGProblem(config)
-    
-
-    log_to = f"{log_dir_name}/logs.txt"
-    debug = f"{log_dir_name}/debug.txt"
-
-    # Setup logging
-    us.setup_logging(log_to, debug)
-    print("Logging results to " + log_to)
-
     
     map_E = MapElitesBNG(config.Feature_Combination, problem, log_dir_name, int(config.run_id), True)
     map_E.run()
@@ -309,4 +299,27 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+
+    Config.EXECTIME = 0
+    config = cfg.BeamNGConfig()
+
+    from folders import folders
+    log_dir_name = folders.experiments
+    # Ensure the folder exists
+    #if os.path.exists(folders.log):
+    #    shutil.rmtree(folders.log)
+    Path(log_dir_name).mkdir(parents=True, exist_ok=True)
+    log_to = f"{log_dir_name}/logs.txt"
+    # debug = f"{log_dir_name}/debug.txt"
+    # Setup logging
+    debug = False
+    us.setup_logging(log_to, debug)
+    log.info(f"Logging results to {log_to}")
+
+    print(sys.argv)
+    if len(sys.argv) > 1 and sys.argv[1] == "random-seeds":
+        from self_driving.asfault_random_population_generator import main as generate_random_seeds
+        # We generate a number of random seeds then we sample them into an initial population
+        generate_random_seeds(config.POOLSIZE)
+
+    main(config)

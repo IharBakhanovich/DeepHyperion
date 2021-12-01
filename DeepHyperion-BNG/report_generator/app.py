@@ -255,6 +255,8 @@ def generate_samples(ctx, force_attribute, filter_samples_by_tshd, asfault_n_sec
 
                             samples.append(DeepHyperionBngSample(sample_file))
 
+                    # TODO Probably we need to add IlluminatedAsFault
+
                     else:
                         log.info("Tool data is missing. Skip sample")
 

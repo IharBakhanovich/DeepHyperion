@@ -18,6 +18,10 @@ from self_driving.beamng_road_imagery import BeamNGRoadImagery
 from self_driving.simulation_data import SimulationDataRecordProperties
 from core.config import Config
 
+#from memory_profiler import profile
+#fp1 = open("run_memory_usage_report.log", "w+")
+#fp2 = open("gen_init_pop_memory_usage_report.log", "w+")
+#fp3 = open("place_in_mapelites_memory_usage_report.log", "w+")
 
 class MapElites(ABC):
 
@@ -58,21 +62,33 @@ class MapElites(ABC):
         self.run_id = run_id
         log.info("Configuration completed.")
 
+        self.log_dir_path = None
+        self.log_dir_name = None
+        self.ensure_directories()
+
+    #@profile(stream=fp2)
     def generate_initial_population(self):
         """
         Bootstrap the algorithm by generating `self.bootstrap_individuals` individuals
         randomly sampled from a uniform distribution
         """
-        log.info("Generate initial population")
+        log.info(f"Generate initial population of size {self.random_solutions}")
         for _ in range(0, self.random_solutions):
             # add solution to elites computing features and performance
-            if self.config.generator_name == self.config.GEN_DIVERSITY:
-                x = self.generate_random_solution_without_sim()
-                self.place_in_mapelites_without_sim(x)
-            else:
-                x = self.generate_random_solution()
-                self.place_in_mapelites(x)
 
+            if self.config.generator_name == self.config.GEN_DIVERSITY:
+                ind = self.generate_random_solution_without_sim()
+                self.place_in_mapelites_without_sim(ind)
+            else:
+                ind = self.generate_random_solution()
+                # We need to execute it
+                self.place_in_mapelites(ind)
+
+            # Clean Individual Simulation States Anyway
+            ind.clean_simulation_states()
+
+
+    #@profile(stream=fp1)
     def run(self):
         """
         Main iteration loop of MAP-Elites
@@ -80,13 +96,17 @@ class MapElites(ABC):
         start_time = datetime.now()
 
         # start by creating an initial set of random solutions
+        log.info("Generating Initial Population")
         self.generate_initial_population()
         self.elapsed_time = datetime.now() - start_time
-        self.extract_results()
 
+        # Make sure we plot ONLY the roads
+        self.extract_results()
+        log.info("Starting the Main Loop")
         for i in range(0, self.iterations):
             if Config.EXECTIME <= self.config.RUNTIME:
                 log.info(f"ITERATION {i}")
+                log.info(f"Remaining time {(self.config.RUNTIME-Config.EXECTIME)}")
                 log.info("Select and mutate.")
                 # get the index of a random individual from the map of elites
                 ind = self.random_selection(individuals=1)[0]
@@ -94,6 +114,8 @@ class MapElites(ABC):
                 ind = self.mutation(ind, ind.seed)
                 # place the new individual in the map of elites
                 self.place_in_mapelites(ind)
+                # Clean up the individual simulation data
+                ind.clean_simulation_states()
             else:
                 break
 
@@ -110,15 +132,17 @@ class MapElites(ABC):
 
         end_time = datetime.now()
         self.elapsed_time = end_time - start_time
-
+        # Make sure we plot ONLY the roads
         self.extract_results()
 
-    def extract_results(self):
+    def ensure_directories(self):
+        # Ensure directories are there\
         now = datetime.now().strftime("%Y%m%d%H%M%S")
-        log_dir_name = f"{self.log_dir_path}/log_{now}"
-        log_dir_path = Path(f"{log_dir_name}/{self.feature_dimensions[1].name}_{self.feature_dimensions[0].name}")
+        self.log_dir_name = f"{self.log_dir_path}/log_{now}"
+        self.log_dir_path = Path(f"{self.log_dir_name}/{self.feature_dimensions[1].name}_{self.feature_dimensions[0].name}")
+        self.log_dir_path.mkdir(parents=True, exist_ok=True)
 
-        log_dir_path.mkdir(parents=True, exist_ok=True)
+    def extract_results(self):
         solutions = self.solutions
         performances = self.performances
         # filled values
@@ -144,24 +168,24 @@ class MapElites(ABC):
                 else:
                     misbehavior = False
 
-                destination_sim = f"{log_dir_path}\\simulation_{solutions[i,j].m.name}_{i,j}.tsv"
-                destination_sim_json = f"{log_dir_path}\\simulation_{solutions[i,j].m.name}_{i,j}.json"
-                destination_road = f"{log_dir_path}\\road_{solutions[i,j].m.name}_{i,j}.json"
+                #destination_sim = f"{self.log_dir_path}\\simulation_{solutions[i,j].m.name}_{i,j}.tsv"
+                #destination_sim_json = f"{self.log_dir_path}\\simulation_{solutions[i,j].m.name}_{i,j}.json"
+                destination_road = f"{self.log_dir_path}\\road_{solutions[i,j].m.name}_{i,j}.json"
 
-                with open(destination_sim_json, 'w') as f:
-                    f.write(json.dumps({
-                        solutions[i, j].m.simulation.f_params: solutions[i, j].m.simulation.params._asdict(),
-                        solutions[i, j].m.simulation.f_info: solutions[i, j].m.simulation.info.__dict__,
-                        solutions[i, j].m.simulation.f_road: solutions[i, j].m.simulation.road.to_dict(),
-                        solutions[i, j].m.simulation.f_records: [r._asdict() for r in solutions[i, j].m.simulation.states]
-                    }))
+                #with open(destination_sim_json, 'w') as f:
+                #    f.write(json.dumps({
+                #        solutions[i, j].m.simulation.f_params: solutions[i, j].m.simulation.params._asdict(),
+                #        solutions[i, j].m.simulation.f_info: solutions[i, j].m.simulation.info.__dict__,
+                #        solutions[i, j].m.simulation.f_road: solutions[i, j].m.simulation.road.to_dict(),
+                #        solutions[i, j].m.simulation.f_records: [r._asdict() for r in solutions[i, j].m.simulation.states]
+                #    }))
 
-                with open(destination_sim, 'w') as f:
-                    sep = '\t'
-                    f.write(sep.join(SimulationDataRecordProperties) + '\n')
-                    gen = (r._asdict() for r in solutions[i,j].m.simulation.states)
-                    gen2 = (sep.join([str(d[key]) for key in SimulationDataRecordProperties]) + '\n' for d in gen)
-                    f.writelines(gen2)
+                #with open(destination_sim, 'w') as f:
+                #    sep = '\t'
+                #    f.write(sep.join(SimulationDataRecordProperties) + '\n')
+                #    gen = (r._asdict() for r in solutions[i,j].m.simulation.states)
+                #    gen2 = (sep.join([str(d[key]) for key in SimulationDataRecordProperties]) + '\n' for d in gen)
+                #    f.writelines(gen2)
 
                 with open(destination_road, 'w') as f:
                     road = {
@@ -183,7 +207,7 @@ class MapElites(ABC):
                     f.write(json.dumps(road))
 
                 road_imagery = BeamNGRoadImagery.from_sample_nodes(solutions[i, j].m.sample_nodes)
-                image_path = log_dir_path.joinpath(f"img_{solutions[i,j].m.name}_{i,j}")
+                image_path = self.log_dir_path.joinpath(f"img_{solutions[i,j].m.name}_{i,j}")
                 road_imagery.save(image_path.with_suffix('.jpg'))
                 road_imagery.save(image_path.with_suffix('.svg'))
 
@@ -206,7 +230,7 @@ class MapElites(ABC):
             'Misbehaviour density': str(miss_density),
             'Performances': self.performances.tolist()
         }
-        dst = f"{log_dir_name}/report_" + self.feature_dimensions[1].name + "_" + self.feature_dimensions[
+        dst = f"{self.log_dir_name}/report_" + self.feature_dimensions[1].name + "_" + self.feature_dimensions[
             0].name + '.json'
         report_string = json.dumps(report)
 
@@ -214,8 +238,9 @@ class MapElites(ABC):
         file.write(report_string)
         file.close()
 
-        self.plot_map_of_elites(performances, f"{log_dir_name}")
+        self.plot_map_of_elites(performances, f"{self.log_dir_name}")
 
+    #@profile(stream=fp3)
     def place_in_mapelites(self, x):
         """
         Puts a solution inside the N-dimensional map of elites space.
@@ -306,7 +331,7 @@ class MapElites(ABC):
 
         def _is_not_initialized(index):
             """
-            Checks if the selected index points to a None solution (not yet initialized)            
+            Checks if the selected index points to a None solution (not yet initialized)
             :return: Boolean
             """
             if self.solutions[index] is None:

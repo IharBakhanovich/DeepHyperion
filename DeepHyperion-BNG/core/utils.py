@@ -325,20 +325,36 @@ def setup_logging(log_to, debug):
     # See: https://stackoverflow.com/questions/56618739/matplotlib-throws-warning-message-because-of-findfont-python
     log.getLogger('matplotlib.font_manager').disabled = True
 
+    formatter = log.Formatter('%(asctime)s %(levelname)-8s %(message)s')
+
     term_handler = log.StreamHandler()
+    term_handler.setFormatter(formatter)
+
     log_handlers = [term_handler]
     start_msg = "Started test generation"
 
     if log_to is not None:
         file_handler = log.FileHandler(log_to, 'a', 'utf-8')
+        file_handler.setFormatter(formatter)
         log_handlers.append( file_handler )
         start_msg += " ".join(["writing to file: ", str(log_to)])
 
     log_level = log.DEBUG if debug else log.INFO
 
-    log.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=log_level, handlers=log_handlers)
+    # SOMEONE ALREADY DEFINED THE ROOT LOGGER. PROBABLY ASFAULT
+    logger = log.getLogger()  # Logger
+    logger.setLevel(log_level)
+
+    # Replace all the handlers
+    for h in logger.handlers:
+        logger.removeHandler(h)
+    # Add our handlers
+    for h in log_handlers:
+        logger.addHandler(h)
+#    log.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=log_level, handlers=log_handlers)
 
     sys.excepthook = log_exception
 
+    print(f">> {start_msg} <<")
     log.info(start_msg)
 

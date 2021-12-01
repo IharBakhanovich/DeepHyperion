@@ -17,6 +17,10 @@ class SimulationDataCollector:
         self.vehicle_state_reader = vehicle_state_reader if vehicle_state_reader \
             else VehicleStateReader(vehicle, beamng)
         self.oob_monitor = OutOfBoundsMonitor(RoadPolygon.from_nodes(road.nodes), self.vehicle_state_reader)
+
+        # Plot this somewhere - IF THIS NUMBER IS TOO HIGH, BEAMNG WILL NOT MAKE IT
+        print(">> Road Nodes ", len(road.nodes))
+
         self.beamng: BeamNGpy = beamng
         self.road: DecalRoad = road
         self.params: SimulationParams = params
@@ -46,7 +50,9 @@ class SimulationDataCollector:
         return self.simulation_data
 
     def take_car_picture_if_needed(self):
+
         last_state = self.states[-1]
+
         if last_state.is_oob:
             self.camera.pose.pos = tuple(last_state.pos[:2]) + (-5,)
             self.camera.pose.rot = (0, 0, -90)
@@ -54,6 +60,32 @@ class SimulationDataCollector:
             img_path.parent.mkdir(parents=True, exist_ok=True)
             if not img_path.exists():
                 self.camera.get_rgb_image().save(str(img_path))
+
+            #self.camera.pose.pos = tuple(last_state.pos[:2]) + (-100,)
+            #self.camera.pose.rot = (0, 0, -90)
+            #img_path = self.simulation_data.path_root.joinpath(f'whole_road_camera_shot.jpg')
+            #img_path.parent.mkdir(parents=True, exist_ok=True)
+            #if not img_path.exists():
+            #    self.camera.get_rgb_image().save(str(img_path))
+
+            # Plot the road to a file
+            #img_path = self.simulation_data.path_root.joinpath(f'whole_road_and_obb.png')
+#
+ #           x = [n[0] for n in self.road.nodes]
+  #          y = [n[1] for n in self.road.nodes]
+#
+ #           import matplotlib.pyplot as plt
+  #          fig = plt.figure()
+   #         plt.ion()
+    #        # Plot the road points
+     #       plt.plot(x, y, "-.")
+      #      # Plot OOB
+       #     oob_x = last_state.pos[0]
+        #    oob_y = last_state.pos[1]
+         #   plt.plot(oob_x, oob_y, "*", color="red")
+          #  plt.title("Road and OOB")
+           # plt.ioff()
+            #plt.savefig(img_path)
 
     def save(self):
         return self.simulation_data.save()

@@ -15,26 +15,27 @@ class Config:
     INVALID = 0
 
     def __init__(self):
-        try:
-            self.BNG_HOME = os.environ['BNG_HOME']
-        except KeyError:
-            self.BNG_HOME = f"{str(Path.home())}/Downloads/BeamNG.research.v1.7.0.1"
-
+        # try:
+        #    self.BNG_HOME = os.environ['BNG_HOME']
+        #except KeyError:
+        #    self.BNG_HOME = f"{str(Path.home())}/Downloads/BeamNG.research.v1.7.0.1"
+        self.BNG_HOME ="C://BeamNG.research.v1.7.0.1"
         print("Setting BNG_HOME to ", self.BNG_HOME)
 
-        try:
-            self.BNG_USER = os.environ['BNG_USER']
-        except KeyError:
-            self.BNG_USER = f"{str(Path.home())}/Documents/BeamNG.research"
+        #try:
+        #    self.BNG_USER = os.environ['BNG_USER']
+        #except KeyError:
+        #    self.BNG_USER = f"{str(Path.home())}/Documents/BeamNG.research"
+        self.BNG_USER = "C://BeamNG.research_userpath"
 
         print("Setting BNG_USER to ", self.BNG_USER)
 
         self.experiment_name = 'exp'
         self.fitness_weights = (-1.0,)
 
-        self.POPSIZE = 24  # 24
-        self.POOLSIZE = 40  # 40
-        self.NUM_GENERATIONS = 2000000000
+        self.POPSIZE = 24 # 24  # What's this?
+        self.POOLSIZE = 40 # 40  # What's this?
+        self.NUM_GENERATIONS = 100 # This controls the number of times the loop goes
 
         self.ARCHIVE_THRESHOLD = 35.0
 
@@ -44,7 +45,7 @@ class Config:
         self.MUTPB = 0.7
         self.SELECTIONPB = 0.3
         self.simulation_save = True
-        self.simulation_name = 'beamng_nvidia_runner/sim_$(id)'
+        self.simulation_name = 'beamng_nvidia_runner/sim_MinRad_MLP_5h_$(id)'
         self.keras_model_file = 'self-driving-car-185-2020.h5'
         self.generator_name = Config.GEN_SEQUENTIAL_SEEDED
         # self.seed_folder = 'population_HQ1'
@@ -56,14 +57,16 @@ class Config:
 
         # self.Feature_Combination = ["SegmentCount", "MeanLateralPosition"]
         # self.Feature_Combination = ["SegmentCount", "MinRadius"] # to change back (to the lane 56 when running really cases)
-        # self.Feature_Combination = ["MinRadius", "MeanLateralPosition"]
+        self.Feature_Combination = ["MinRadius", "MeanLateralPosition"]
         # self.Feature_Combination = ["SegmentCount", "SDSteeringAngle"] #3
-        self.Feature_Combination = ["SDSteeringAngle", "MeanLateralPosition"]
+        # self.Feature_Combination = ["SDSteeringAngle", "MeanLateralPosition"]
         # self.Feature_Combination = ["SDSteeringAngle", "MinRadius"]
-        self.RUNTIME = 300  #36000 # in seconds
-        self.INTERVAL = 180  #3600 # interval for temp reports
 
-        self.run_id = 3
+        self.RUNTIME = 5 * 3600  #in seconds
+
+        self.INTERVAL = 5 * 1800  #3600 # interval for temp reports
+
+        self.run_id = 4
 
 
 

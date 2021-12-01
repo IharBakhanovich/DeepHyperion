@@ -1,6 +1,7 @@
 import hashlib
 import random
 from typing import Tuple, Dict
+import logging as log
 
 from self_driving.beamng_config import BeamNGConfig
 from self_driving.beamng_evaluator import BeamNGEvaluator
@@ -9,6 +10,9 @@ from self_driving.catmull_rom import catmull_rom
 from self_driving.road_bbox import RoadBoundingBox
 from self_driving.road_polygon import RoadPolygon
 from self_driving.edit_distance_polyline import iterative_levenshtein
+
+#from memory_profiler import profile
+#fp5 = open("evaluate2_memory_usage_report.log", "w+")
 
 Tuple4F = Tuple[float, float, float, float]
 Tuple2F = Tuple[float, float]
@@ -31,7 +35,8 @@ class BeamNGMember(Member):
         self.config: BeamNGConfig = None
         self.problem: 'BeamNGProblem' = None
         self._evaluator: BeamNGEvaluator = None
-        # self.simulation = None
+
+        self.simulation = None
         # self.simulation.states = None
 
     def clone(self):
@@ -59,10 +64,11 @@ class BeamNGMember(Member):
         res.distance_to_boundary = dict['distance_to_boundary']
         return res
 
+    #@profile(stream=fp5)
     def evaluate(self):
         if self.needs_evaluation():
             self.simulation = self.problem._get_evaluator().evaluate([self])
-            print('eval mbr', self)
+            log.info(f'eval mbr {self}')
 
         #assert not self.needs_evaluation()
 
@@ -71,6 +77,9 @@ class BeamNGMember(Member):
 
     def clear_evaluation(self):
         self.distance_to_boundary = None
+        self.simulation = None
+
+
 
     def is_valid(self):
         return (RoadPolygon.from_nodes(self.sample_nodes).is_valid() and

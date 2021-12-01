@@ -11,7 +11,8 @@ from self_driving.asfault_network import *
 from self_driving.road_generator import *
 
 # code from the AsFault
-MIN_NODE_DISTANCE = 0.1
+# MIN_NODE_DISTANCE = 0.1
+MIN_NODE_DISTANCE = 2.0
 B_BOX = (-250, 0, 250, 500)
 
 

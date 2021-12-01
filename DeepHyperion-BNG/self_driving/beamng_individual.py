@@ -11,6 +11,9 @@ from core.individual import Individual
 from self_driving.asfault_member import AsFaultBeamNGMember
 from self_driving.beamng_member import BeamNGMember
 
+#from memory_profiler import profile
+#fp4 = open("evaluate_memory_usage_report.log", "w+")
+
 log = get_logger(__file__)
 
 
@@ -27,6 +30,7 @@ class BeamNGIndividual(Individual):
         self.m.parent = self
         self.seed: AsFaultBeamNGMember
 
+    # @profile(stream=fp4)
     def evaluate(self):
         self.m.evaluate()
 
@@ -62,3 +66,11 @@ class BeamNGIndividual(Individual):
         road_to_mutate = self.m
         road_to_mutate.mutate()
         log.info(f'mutated {road_to_mutate}')
+
+    def clean_simulation_states(self):
+        try:
+            log.info(f"CLEAN UP SIMULATION DATA FOR {self}")
+            self.m.simulation.states = []
+        except Exception as ex:
+            # traceback.print_exception(type(ex), ex, ex.__traceback__)
+            log.warning(f"Failed to clean up simulation data for {self}")

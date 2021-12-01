@@ -1,7 +1,11 @@
 # Global variables
 SHELL=/bin/bash
 DATA=data
-BEAMNG_DATA=$(DATA)/beamng
+
+# ILLUMINATED_ASFAULT_DATA=$(DATA)/illuminated-asfault
+#BEAMNG_DATA=$(DATA)/beamng
+BEAMNG_DATA=$(DATA)/illuminated-asfault
+
 MNIST_DATA=$(DATA)/mnist
 V_PYTHON=.venv/bin/python
 APP=data_analysis.py
@@ -23,6 +27,8 @@ PYTHON_VERSION=$(shell $(PYTHON3) -c 'import sys; print("%d.%d"% sys.version_inf
 PYTHON_VERSION_OK=$(shell $(PYTHON3) -c 'import sys;\
   print(int(float("%d.%d"% sys.version_info[0:2]) >= $(PYTHON_VERSION_MIN) and float("%d.%d"% sys.version_info[0:2]) < $(PYTHON_VERSION_MAX)))' )
 
+PIP=pip3
+
 ifeq ($(PYTHON_VERSION_OK),0)
   $(error "Need python $(PYTHON_VERSION_MIN) but found $(PYTHON_VERSION)")
 endif
@@ -37,14 +43,14 @@ endif
 
 .venv/touchfile: requirements.txt
 	test -d .venv || $(PYTHON3) -m venv .venv
-	. .venv/bin/activate; pip install --upgrade pip; pip install -r requirements.txt
+	. .venv/bin/activate; $(PIP) install --upgrade pip; $(PIP) install -r requirements.txt
 	touch .venv/touchfile
 
 ### Prepare the data EXPERIMENTAL DATA
 
-$(BEAMNG_DATA):
-	mkdir -p $(BEAMNG_DATA) && \
-	tar -xzvf $(DATA)/beamng.tar.gz --directory $(BEAMNG_DATA)
+#$(BEAMNG_DATA):
+#	mkdir -p $(BEAMNG_DATA) && \
+#	tar -xzvf $(DATA)/beamng.tar.gz --directory $(BEAMNG_DATA)
 
 $(MNIST_DATA):
 	mkdir -p $(MNIST_DATA) && \

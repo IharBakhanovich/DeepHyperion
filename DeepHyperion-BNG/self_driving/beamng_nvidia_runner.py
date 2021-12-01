@@ -4,6 +4,8 @@ import time
 import traceback
 from typing import List, Tuple
 from datetime import datetime
+
+import matplotlib.pyplot as plt
 from tensorflow.keras.models import load_model
 
 from core.folder_storage import SeedStorage
@@ -23,6 +25,10 @@ from self_driving.utils import get_node_coords, points_distance
 from self_driving.vehicle_state_reader import VehicleStateReader
 from udacity_integration.beamng_car_cameras import BeamNGCarCameras
 
+#from memory_profiler import profile
+#fp8 = open("evaluate_from_nvidia_runner_memory_usage_report.log", "w+")
+#fp9 = open("_run_simulation_memory_usage_report.log", "w+")
+
 
 log = get_logger(__file__)
 
@@ -38,6 +44,7 @@ class BeamNGNvidiaOob(BeamNGEvaluator):
             raise Exception(f'File {self.model_file} does not exist!')
         self.model = None
 
+    #@profile(stream=fp8)
     def evaluate(self, members: List[BeamNGMember]):
         for member in members:
             if not member.needs_evaluation():
@@ -63,10 +70,12 @@ class BeamNGNvidiaOob(BeamNGEvaluator):
                     break
 
             member.distance_to_boundary = sim.min_oob_distance()
+            # Here the issue !
             member.simulation = sim
             log.info(f'{member} BeamNG evaluation completed')
         return sim
 
+    #@profile(stream=fp9)
     def _run_simulation(self, member) -> SimulationData:
         nodes = member.sample_nodes
         if not self.brewer:
@@ -74,10 +83,25 @@ class BeamNGNvidiaOob(BeamNGEvaluator):
             self.vehicle = self.brewer.setup_vehicle()
             self.camera = self.brewer.setup_scenario_camera()
 
+        #fig, ax = plt.subplots(1, 1)
+        #ax.set_aspect('equal')
+        #ax.set_xlim(-250, 250)
+        #ax.set_ylim(0, 500)
+        #plt.show()
+        #plt.pause(0.0001)
+
+        #xs = [n[0] for n in nodes ]
+        #ys = [n[1] for n in nodes ]
+        #plt.plot(xs, ys, "-")
+
         brewer = self.brewer
         brewer.setup_road_nodes(nodes)
         beamng = brewer.beamng
         waypoint_goal = BeamNGWaypoint('waypoint_goal', get_node_coords(nodes[-1]))
+
+        #print("WAYPOINT GOAL IS ", waypoint_goal.position)
+        #plt.plot(waypoint_goal.position[0], waypoint_goal.position[1], "*")
+
         maps.install_map_if_needed()
         maps.beamng_map.generated().write_items(brewer.decal_road.to_json() + '\n' + waypoint_goal.to_json())
 
@@ -109,11 +133,25 @@ class BeamNGNvidiaOob(BeamNGEvaluator):
 
                 sim_data_collector.collect_current_data(oob_bb=False)
                 last_state: SimulationDataRecord = sim_data_collector.states[-1]
-                if points_distance(last_state.pos, waypoint_goal.position) < 6.0:
+
+         #       if idx == 1:
+          #          plt.plot(last_state.pos[0], last_state.pos[1], "o", color="yellow")
+           #         plt.show()
+
+                distance_to_goal = points_distance(last_state.pos, waypoint_goal.position)
+                if distance_to_goal < 6.0:
                     break
+                #else:
+                #    if idx % 50 == 0:
+                 #       print("DISTANCE TO GOAL: ", distance_to_goal, "AT", idx)
+                    #    ax.plot(last_state.pos[0], last_state.pos[1], "o", color="yellow")
+                    #    plt.show()
+                    #    plt.pause(0.0001)
 
                 if last_state.is_oob:
+                    # plt.close(fig)
                     break
+
                 img = vehicle_state_reader.sensors['cam_center']['colour'].convert('RGB')
                 steering_angle, throttle = predict.predict(img, last_state)
                 self.vehicle.control(throttle=throttle, steering=steering_angle, brake=0)
@@ -126,6 +164,7 @@ class BeamNGNvidiaOob(BeamNGEvaluator):
         finally:
             if self.config.simulation_save:
                 member.simulation = sim_data_collector.get_simulation_data()
+                log.info("STORING SIMULATION DATA TO FILE")
                 sim_data_collector.save()
 
                 try:
@@ -144,7 +183,7 @@ class BeamNGNvidiaOob(BeamNGEvaluator):
                 if self.brewer:
                     self.brewer.beamng.stop_scenario()
         except Exception as ex:
-            log.debug('end_iteration() failed:')
+            log.error('end_iteration() failed:')
             traceback.print_exception(type(ex), ex, ex.__traceback__)
 
     def _close(self):
@@ -152,7 +191,7 @@ class BeamNGNvidiaOob(BeamNGEvaluator):
             try:
                 self.brewer.beamng.close()
             except Exception as ex:
-                log.debug('beamng.close() failed:')
+                log.error('beamng.close() failed:')
                 traceback.print_exception(type(ex), ex, ex.__traceback__)
             self.brewer = None
 

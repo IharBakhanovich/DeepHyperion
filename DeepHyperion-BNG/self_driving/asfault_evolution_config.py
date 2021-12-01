@@ -8,7 +8,7 @@ class EvolutionConfig:
     L_LANES = 1
     R_LANES = 1
     MAX_ANGLE = 5.0
-    BOUNDS = 500
+    BOUNDS = 250
     POP_SIZE = 25
     MUT_CHANCE = 0.05
     INTRO_CHANCE = 0.15

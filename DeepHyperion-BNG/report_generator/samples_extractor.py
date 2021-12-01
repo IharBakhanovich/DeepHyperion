@@ -240,6 +240,7 @@ class BeamNGSample(Sample):
         with open(filedest, 'w') as f:
             (json.dump(data, f, sort_keys=True, indent=4))
 
+
 class DeepHyperionBngSample(BeamNGSample):
     """
         We need to extract basepath from the simulation_full_path because there are many simulation files in the same
