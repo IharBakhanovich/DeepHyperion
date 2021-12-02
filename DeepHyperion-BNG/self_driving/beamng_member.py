@@ -36,7 +36,7 @@ class BeamNGMember(Member):
         self.problem: 'BeamNGProblem' = None
         self._evaluator: BeamNGEvaluator = None
 
-        self.simulation = None
+        # self.simulation = None
         # self.simulation.states = None
 
     def clone(self):
@@ -77,7 +77,7 @@ class BeamNGMember(Member):
 
     def clear_evaluation(self):
         self.distance_to_boundary = None
-        self.simulation = None
+        # self.simulation = None
 
 
 

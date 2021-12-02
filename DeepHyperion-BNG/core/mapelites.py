@@ -85,7 +85,7 @@ class MapElites(ABC):
                 self.place_in_mapelites(ind)
 
             # Clean Individual Simulation States Anyway
-            ind.clean_simulation_states()
+            # ind.clean_simulation_states()
 
 
     #@profile(stream=fp1)
@@ -115,7 +115,7 @@ class MapElites(ABC):
                 # place the new individual in the map of elites
                 self.place_in_mapelites(ind)
                 # Clean up the individual simulation data
-                ind.clean_simulation_states()
+                # ind.clean_simulation_states()
             else:
                 break
 

@@ -33,8 +33,8 @@ class Config:
         self.experiment_name = 'exp'
         self.fitness_weights = (-1.0,)
 
-        self.POPSIZE = 24 # 24  # What's this?
-        self.POOLSIZE = 40 # 40  # What's this?
+        self.POPSIZE = 2 #4 # 24  # What's this?
+        self.POOLSIZE = 4 #0 # 40  # What's this?
         self.NUM_GENERATIONS = 100 # This controls the number of times the loop goes
 
         self.ARCHIVE_THRESHOLD = 35.0
@@ -45,7 +45,7 @@ class Config:
         self.MUTPB = 0.7
         self.SELECTIONPB = 0.3
         self.simulation_save = True
-        self.simulation_name = 'beamng_nvidia_runner/sim_MinRad_MLP_5h_$(id)'
+        self.simulation_name = 'beamng_nvidia_runner/sim_$(id)'
         self.keras_model_file = 'self-driving-car-185-2020.h5'
         self.generator_name = Config.GEN_SEQUENTIAL_SEEDED
         # self.seed_folder = 'population_HQ1'
@@ -57,16 +57,16 @@ class Config:
 
         # self.Feature_Combination = ["SegmentCount", "MeanLateralPosition"]
         # self.Feature_Combination = ["SegmentCount", "MinRadius"] # to change back (to the lane 56 when running really cases)
-        self.Feature_Combination = ["MinRadius", "MeanLateralPosition"]
-        # self.Feature_Combination = ["SegmentCount", "SDSteeringAngle"] #3
+        # self.Feature_Combination = ["MinRadius", "MeanLateralPosition"]
+        self.Feature_Combination = ["SegmentCount", "SDSteeringAngle"] #3
         # self.Feature_Combination = ["SDSteeringAngle", "MeanLateralPosition"]
         # self.Feature_Combination = ["SDSteeringAngle", "MinRadius"]
 
-        self.RUNTIME = 5 * 3600  #in seconds
+        self.RUNTIME = 180  #in seconds
 
-        self.INTERVAL = 5 * 1800  #3600 # interval for temp reports
+        self.INTERVAL = 90  #3600 # interval for temp reports
 
-        self.run_id = 4
+        self.run_id = 5
 
 
 
