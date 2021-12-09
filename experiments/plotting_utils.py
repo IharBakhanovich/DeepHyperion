@@ -10,9 +10,10 @@ from matplotlib.patches import Rectangle
 
 def create_custom_palette():
     tool_colors = {
-        "DeepHyperion": "#ffffff",
+        "DeepHyperion": "#d3d3d3",
         "DeepJanus": "#d3d3d3",  # C0C0C0 - #DCDCDC
-        "DLFuzz": "#a9a9a9"  # #808080
+        "DLFuzz": "#a9a9a9",  # #808080
+        "IlluminatedAsFault": "#ffffff"  # #808080
     }
     return tool_colors
 
@@ -155,7 +156,7 @@ def filter_data_and_plot_as_boxplots(use_ax, we_plot, raw_data, palette):
         return None
 
     hue_order = []
-    for tool_name in ["DeepHyperion", "DeepJanus", "DLFuzz"]:
+    for tool_name in ["DeepHyperion", "IlluminatedAsFault"]: #["DeepHyperion", "DeepJanus", "DLFuzz", "IlluminatedAsFault"]:
         if tool_name in plot_data["Tool"].unique():
             hue_order.append(tool_name)
 

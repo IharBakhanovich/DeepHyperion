@@ -21,6 +21,8 @@ def select_samples_by_elapsed_time(max_elapsed_minutes, min_elapsed_minutes=0):
     Consider the samples only if their elapsed time is between min and max. Min is defaulted to 0.0.
     Everything is expressed in minutes
 
+    REMOVE NONE
+
     Args:
         max_elapsed_minutes:
         min_elapsed_minutes
@@ -377,6 +379,9 @@ class IlluminationMap:
 
         """
         filtered_samples = self.samples
+
+
+
         self.logger.debug("Valid samples: %s", len(filtered_samples))
 
         filtered_invalid_samples = self.invalid_samples
@@ -416,7 +421,7 @@ class IlluminationMap:
             report["Features"][feature.feature_name]["meta"] = feature.to_dict()
             report["Features"][feature.feature_name]["stats"] = {}
 
-            feature_raw_data = [sample.get_value(feature.feature_name) for sample in filtered_samples]
+            feature_raw_data = [sample.get_value(feature.feature_name) for sample in filtered_samples if sample.get_value(feature.feature_name) is not None]
 
             report["Features"][feature.feature_name]["stats"]["mean"] = np.NaN
             report["Features"][feature.feature_name]["stats"]["stdev"] = np.NaN

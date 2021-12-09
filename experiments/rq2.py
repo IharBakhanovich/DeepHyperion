@@ -58,15 +58,16 @@ def preprare_the_figure(plot_data):
 def main():
     # Load all the data and select the required feature combinations
 
-    mnist_data = load_data_from_folder("./data/mnist")
-    mnist_data = filter_data_by_tag(mnist_data, ["black-box", "rescaled"])
-    mnist_figure = preprare_the_figure(mnist_data)
+   # mnist_data = load_data_from_folder("./data/mnist")
+   # mnist_data = filter_data_by_tag(mnist_data, ["black-box", "rescaled"])
+   # mnist_figure = preprare_the_figure(mnist_data)
 
     # Store
-    store_figure_to_paper_folder(mnist_figure, file_name="RQ2-MNIST")
+    #store_figure_to_paper_folder(mnist_figure, file_name="RQ2-MNIST")
 
-    beamng_data = load_data_from_folder("./data/beamng")
-    beamng_data = filter_data_by_tag(beamng_data, ["black-box", "rescaled"])
+    #beamng_data = load_data_from_folder("./data/beamng")
+    beamng_data = load_data_from_folder("./data/illuminated-asfault-250")
+    #beamng_data = filter_data_by_tag(beamng_data, ["black-box", "rescaled"])
     beamng_figure = preprare_the_figure(beamng_data)
 
     # Store

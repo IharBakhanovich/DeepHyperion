@@ -23,8 +23,7 @@ from pathlib import Path
 
 from report_generator.illumination_map import IlluminationAxisDefinition, IlluminationMap, select_samples_by_elapsed_time
 from report_generator.samples_extractor import Sample
-from report_generator.samples_extractor import DeepHyperionBngSample
-from report_generator.samples_extractor import DeepJanusBngSample
+from report_generator.samples_extractor import DeepHyperionBngSample, IlluminatedAsFaultBeamNG, DeepJanusBngSample
 
 # This introduces dependencies on cairo
 #
@@ -252,9 +251,12 @@ def generate_samples(ctx, force_attribute, filter_samples_by_tshd, asfault_n_sec
                     elif cast_as == "DeepHyperionBeamNG":
                         if sample_file.endswith("simulation.json") or sample_file.endswith("simulation.full.json") or \
                                 (Path(sample_file).name.startswith("simulation") and Path(sample_file).name.endswith(".json")):
-
                             samples.append(DeepHyperionBngSample(sample_file))
-
+                    elif cast_as == "IlluminatedAsFaultBeamNG":
+                        if sample_file.endswith("simulation.json") or sample_file.endswith("simulation.full.json") or \
+                                (Path(sample_file).name.startswith("simulation") and Path(sample_file).name.endswith(
+                                    ".json")):
+                            samples.append(IlluminatedAsFaultBeamNG(sample_file))
                     # TODO Probably we need to add IlluminatedAsFault
 
                     else:
@@ -426,6 +428,9 @@ def generate_map(ctx, visualize, drop_outliers, feature, tag, at, run_folder):
                     samples.append(Sample.from_dict(json.load(input_file)))
             except Exception:
                 log.warning("Error while reading file %s in main loop", exc_info=True)
+
+    # Clean Up the Samples
+    samples = [s for s in samples if len(s.features) > 0 ]
 
     the_map = IlluminationMap(map_features, set(samples), drop_outliers=drop_outliers)
 

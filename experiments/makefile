@@ -2,11 +2,8 @@
 SHELL=/bin/bash
 DATA=data
 
-# ILLUMINATED_ASFAULT_DATA=$(DATA)/illuminated-asfault
-#BEAMNG_DATA=$(DATA)/beamng
-BEAMNG_DATA=$(DATA)/illuminated-asfault
+BEAMNG_DATA=$(DATA)/illuminated-asfault-250
 
-MNIST_DATA=$(DATA)/mnist
 V_PYTHON=.venv/bin/python
 APP=data_analysis.py
 
@@ -47,26 +44,6 @@ endif
 	touch .venv/touchfile
 
 ### Prepare the data EXPERIMENTAL DATA
-
-#$(BEAMNG_DATA):
-#	mkdir -p $(BEAMNG_DATA) && \
-#	tar -xzvf $(DATA)/beamng.tar.gz --directory $(BEAMNG_DATA)
-
-$(MNIST_DATA):
-	mkdir -p $(MNIST_DATA) && \
-	tar -xzvf $(DATA)/mnist.tar.gz --directory $(MNIST_DATA)
-
-### Clean up
-
-clean-beamng-data:
-	$(RM) -r -v $(BEAMNG_DATA)
-
-clean-mnist-data:
-	$(RM) -r -v $(MNIST_DATA)
-
-clean-data: clean-mnist-data clean-beamng-data
-	@echo "Done"
-
 clean-plots: 
 	$(RM) -v plots/*.pdf
 	$(RM) -v plots/*.stats
@@ -74,27 +51,22 @@ clean-plots:
 
 ### Plotting Targets. 
 
-./plots/RQ1-MNIST.pdf ./plots/RQ1-BeamNG.pdf: $(BEAMNG_DATA) $(MNIST_DATA) .venv
+./plots/RQ1-BeamNG.pdf: $(BEAMNG_DATA) .venv
 	$(V_PYTHON) rq1.py
 
-./plots/RQ2-MNIST.pdf ./plots/RQ2-BeamNG.pdf: $(BEAMNG_DATA) $(MNIST_DATA) .venv
+./plots/RQ2-BeamNG.pdf: $(BEAMNG_DATA) .venv
 	$(V_PYTHON) rq2.py
-
-./plots/RQ3-MNIST.pdf ./plots/RQ3-BeamNG.pdf: $(BEAMNG_DATA) $(MNIST_DATA) .venv
-	$(V_PYTHON) rq3.py
 
 ### Plotting "Commands". Use the following only if you want to plot each single figure, otherwise use plot-all
 
-rq1: $(BEAMNG_DATA) $(MNIST_DATA) .venv
+rq1: $(BEAMNG_DATA) .venv
 	$(V_PYTHON) rq1.py 2>&1 | tee $@.log
 
-rq2: $(BEAMNG_DATA) $(MNIST_DATA) .venv
+rq2: $(BEAMNG_DATA) .venv
 	$(V_PYTHON) rq2.py 2>&1 | tee $@.log
 
-rq3: $(BEAMNG_DATA) $(MNIST_DATA) .venv
-	$(V_PYTHON) rq3.py 2>&1 | tee $@.log
 
 ### Plot all the figures in the paper from the data
 
-plot-all: ./plots/RQ1-MNIST.pdf ./plots/RQ1-BeamNG.pdf ./plots/RQ2-MNIST.pdf ./plots/RQ2-BeamNG.pdf ./plots/RQ3-MNIST.pdf ./plots/RQ3-BeamNG.pdf
+plot-all: ./plots/RQ1-BeamNG.pdf ./plots/RQ2-BeamNG.pdf
 	@echo Done
